@@ -7,6 +7,8 @@ var CHARACTER_SPRITE_FRAMES_NUMBER = 4;
 var CHARACTER_SPRITE_FRAME_WIDTH = CHARACTER_SPRITE_WIDTH/CHARACTER_SPRITE_FRAMES_NUMBER;
 var CHARACTER_SPRITE_FRAME_HEIGHT = 689;
 
+var DISTANCE_BETWEEN_BASKET_AND_PLAYER = 40;
+
 var PLATFORM_SPRITE_WIDTH = 652;
 var PLATFORM_SPRITE_HEIGHT = 232;
 
@@ -131,53 +133,34 @@ function update() {
   });
 
   player.body.velocity.x = 0;
-  basket.body.velocity.x = 0;
 
-  console.log(player.position.x,player.position.y);
-  console.log(player.position.x > (((CHARACTER_SPRITE_FRAME_WIDTH/CHARACTER_SPRITE_FRAMES_NUMBER)/4)/10),
-    player.position.x < viewport.width - (((CHARACTER_SPRITE_FRAME_WIDTH/CHARACTER_SPRITE_FRAMES_NUMBER)/4)/10));
+  if (cursors.left.isDown)
+  {
+      player.body.velocity.x = -300;
 
-  if ( player.position.x > (((CHARACTER_SPRITE_FRAME_WIDTH/CHARACTER_SPRITE_FRAMES_NUMBER)/4)/10) &&
-    player.position.x < viewport.width - (((CHARACTER_SPRITE_FRAME_WIDTH/CHARACTER_SPRITE_FRAMES_NUMBER)/4)/10) ) {
-
-  /*if ( player.position.x > 60 && player.position.x < 120 &&
-    player.position.x < viewport.width - 60 && player.position.x > viewport.width - 120 ) {*/
-
-      if (cursors.left.isDown)
+      if (facing != DIRECTIONS.LEFT)
       {
-          player.body.velocity.x = -300;
-          basket.body.velocity.x = -300;
-
-          if (facing != DIRECTIONS.LEFT)
-          {
-              facing = DIRECTIONS.LEFT;
-              var playerPosition = player.position;
-              var basketPosition = basket.position;
-              player.position = basketPosition;
-              basket.position = playerPosition;
-          }
+          facing = DIRECTIONS.LEFT;
       }
-      else if (cursors.right.isDown)
+  }
+  else if (cursors.right.isDown)
+  {
+      player.body.velocity.x = 300;
+
+      if (facing != DIRECTIONS.RIGHT)
       {
-          player.body.velocity.x = 300;
-          basket.body.velocity.x = 300;
-
-          if (facing != DIRECTIONS.RIGHT)
-          {
-              facing = DIRECTIONS.RIGHT;
-              var playerPosition = player.position;
-              var basketPosition = basket.position;
-              player.position = basketPosition;
-              basket.position = playerPosition;
-          }
+          facing = DIRECTIONS.RIGHT;
       }
+  }
+
+  if (facing === DIRECTIONS.RIGHT) {
+    basket.position.x = player.position.x + DISTANCE_BETWEEN_BASKET_AND_PLAYER;
+  }
+  else {
+    basket.position.x = player.position.x - DISTANCE_BETWEEN_BASKET_AND_PLAYER;
   }
   
   renderAnimationState();
-
-  game.world.wrap(player,0,false,true,false);
-  game.world.wrap(basket,0,false,true,false);
-
 }
 
 function getRandomPosition() {
