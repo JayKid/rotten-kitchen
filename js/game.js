@@ -38,7 +38,8 @@ var objects = [];
 var facing = DIRECTIONS.RIGHT;
 var cursors;
 var bg;
-
+var scoreCounter;
+var scoreContainer;
 
 function create() {
 
@@ -61,6 +62,9 @@ function create() {
     basket.animations.add('jump-right', [3]);
     basket.animations.add('stand-left', [1]);
     basket.animations.add('stand-right', [2]);
+
+    scoreCounter = 0;
+    scoreContainer = game.add.text(viewport.width - 200, 16, 'SC0R3: '+scoreCounter, { fontSize: '32px', fill: '#000' });
     
     game.physics.enable( [ player,basket ], Phaser.Physics.ARCADE);
 
@@ -87,7 +91,9 @@ function create() {
       music = game.add.audio('catch');
       music.play();
 
-      console.log(object);
+      scoreCounter = scoreCounter + 1;
+      scoreContainer.text = 'SC0R3: ' + scoreCounter;
+      
       object.destroy();
     }, this);
     
