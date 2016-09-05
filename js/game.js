@@ -22,7 +22,7 @@ var game = new Phaser.Game(viewport.width, viewport.height, Phaser.AUTO, 'phaser
 function preload() {
 
     game.load.spritesheet('player', 'assets/player.png', CHARACTER_SPRITE_WIDTH, CHARACTER_SPRITE_FRAME_HEIGHT, CHARACTER_SPRITE_FRAMES_NUMBER);
-    game.load.image('platform', 'assets/platform.png');
+    game.load.image('burger', 'assets/burger.png');
 
     game.load.audio('catch', ['assets/audio/catch.mp3']);
 }
@@ -154,13 +154,8 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
 
-    var createObjectActionBirdTwo = function () {
-        var position = {
-           x: secondBird.body.position.x,
-           y: 50
-        };
-
-        var object = game.add.sprite(position.x, position.y, 'player');
+    var createRandomObjectInPosition = function (position) {
+        var object = game.add.sprite(position.x, position.y, 'burger');
         game.physics.enable( [ object ], Phaser.Physics.ARCADE);
         object.body.checkCollision.up = false;
         object.body.checkCollision.down = true;
@@ -169,8 +164,17 @@ function create() {
         object.body.allowGravity = true;
         object.body.immovable = false;
         object.body.outOfBoundsKill = true;
-        object.scale.setTo(0.1, 0.1);
+        object.scale.setTo(0.5, 0.5);
         objects.push(object);
+    };
+
+    var createObjectActionBirdTwo = function () {
+        var position = {
+           x: secondBird.body.position.x,
+           y: 50
+        };
+        
+        createRandomObjectInPosition(position);
         window.setTimeout(createObjectActionBirdTwo, 2000);
     };
 
@@ -185,17 +189,7 @@ function create() {
           window.setTimeout(createObjectActionBirdTwo, 1000);
         }
 
-        var object = game.add.sprite(position.x, position.y, 'player');
-        game.physics.enable( [ object ], Phaser.Physics.ARCADE);
-        object.body.checkCollision.up = false;
-        object.body.checkCollision.down = true;
-        object.body.checkCollision.left = true;
-        object.body.checkCollision.right = true;
-        object.body.allowGravity = true;
-        object.body.immovable = false;
-        object.body.outOfBoundsKill = true;
-        object.scale.setTo(0.1, 0.1);
-        objects.push(object);
+        createRandomObjectInPosition(position);
         window.setTimeout(createObjectAction, 2000);
     };
     window.setTimeout(createObjectAction, 2000);
