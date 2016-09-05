@@ -33,6 +33,9 @@ function preload() {
 
 var player;
 var basket;
+var bird;
+var birdMoveCounter;
+var multiplier;
 var animationState = ANIMATION_STATES.STAND;
 var objects = [];
 var facing = DIRECTIONS.RIGHT;
@@ -51,6 +54,12 @@ function create() {
     //  Set the world (global) gravity
     game.physics.arcade.gravity.y = 1000;
 
+    bird = game.add.sprite(Math.random()*viewport.width, 0, 'player');
+    bird.animations.add('jump-left', [0]);
+    bird.animations.add('jump-right', [3]);
+    bird.animations.add('stand-left', [1]);
+    bird.animations.add('stand-right', [2]);
+
     player = game.add.sprite(200, viewport.height - CHARACTER_SPRITE_FRAME_HEIGHT/10, 'player');
     player.animations.add('jump-left', [0]);
     player.animations.add('jump-right', [3]);
@@ -63,10 +72,12 @@ function create() {
     basket.animations.add('stand-left', [1]);
     basket.animations.add('stand-right', [2]);
 
+    birdMoveCounter = 0;
+    multiplier = -1;
     scoreCounter = 0;
     scoreContainer = game.add.text(viewport.width - 200, 16, 'SC0R3: '+scoreCounter, { fontSize: '32px', fill: '#000' });
     
-    game.physics.enable( [ player,basket ], Phaser.Physics.ARCADE);
+    game.physics.enable( [ player,basket, bird ], Phaser.Physics.ARCADE);
 
     player.body.checkCollision.up = true;
     player.body.checkCollision.down = false;
@@ -85,6 +96,15 @@ function create() {
 
     basket.alpha = 0.2;
 
+    bird.body.checkCollision.up = false;
+    bird.body.checkCollision.down = false;
+    bird.body.checkCollision.left = false;
+    bird.body.checkCollision.right = false;
+    bird.body.mass = 1;
+    bird.body.collideWorldBounds = true;
+    bird.body.allowGravity = false;
+
+
     basket.body.onCollide = new Phaser.Signal();
     basket.body.onCollide.add(function(basket, object) {
       var music;
@@ -102,6 +122,8 @@ function create() {
     
     basket.scale.setTo(0.1,0.1);
 
+    bird.scale.setTo(0.1,0.1);
+
     // Set hitbox to a little bit less than the height so it looks like he's in contact with the platform
     player.body.setSize(CHARACTER_SPRITE_FRAME_WIDTH,CHARACTER_SPRITE_FRAME_HEIGHT-70);
     
@@ -110,12 +132,12 @@ function create() {
     game.camera.follow(player);
 
     cursors = game.input.keyboard.createCursorKeys();
-    var self = this;
     var createObjectAction = function () {
         var position = {
-           x: Math.random()*viewport.width,
-           y: 0
-        };;
+           x: bird.body.position.x,
+           y: 50
+        };
+
         var object = game.add.sprite(position.x, position.y, 'player');
         game.physics.enable( [ object ], Phaser.Physics.ARCADE);
         object.body.checkCollision.up = false;
@@ -139,6 +161,20 @@ function update() {
   });
 
   player.body.velocity.x = 0;
+
+  bird.body.position.x = bird.body.position.x + (multiplier * Math.random()*viewport.width*0.01);
+
+  if (birdMoveCounter % 80 == 0) {
+    birdMoveCounter = 0;
+    multiplier = multiplier * -1.0;
+  }
+
+  var changeDirectionChance = Math.random();
+  if (changeDirectionChance >= 0 && changeDirectionChance < 0.001) {
+    multiplier = multiplier * -1;
+  }
+
+  ++birdMoveCounter;
 
   if (cursors.left.isDown)
   {
