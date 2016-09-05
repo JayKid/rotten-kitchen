@@ -7,6 +7,9 @@ var CHARACTER_SPRITE_FRAMES_NUMBER = 4;
 var CHARACTER_SPRITE_FRAME_WIDTH = CHARACTER_SPRITE_WIDTH/CHARACTER_SPRITE_FRAMES_NUMBER;
 var CHARACTER_SPRITE_FRAME_HEIGHT = 689;
 
+var BASKET_SPRITE_WIDTH = 138;
+var BASKET_SPRITE_HEIGHT = 129;
+
 var DISTANCE_BETWEEN_BASKET_AND_PLAYER = 40;
 
 var DIRECTIONS = {
@@ -22,6 +25,7 @@ var game = new Phaser.Game(viewport.width, viewport.height, Phaser.AUTO, 'phaser
 function preload() {
 
     game.load.spritesheet('player', 'assets/player.png', CHARACTER_SPRITE_WIDTH, CHARACTER_SPRITE_FRAME_HEIGHT, CHARACTER_SPRITE_FRAMES_NUMBER);
+    game.load.image('basket', 'assets/basket.png');
     game.load.image('burger', 'assets/burger.png');
 
     game.load.audio('catch', ['assets/audio/catch.mp3']);
@@ -77,11 +81,7 @@ function create() {
     player.animations.add('stand-left', [1]);
     player.animations.add('stand-right', [2]);
 
-    basket = game.add.sprite(200+((CHARACTER_SPRITE_WIDTH/CHARACTER_SPRITE_FRAMES_NUMBER)/10)*4, viewport.height - CHARACTER_SPRITE_FRAME_HEIGHT/10, 'player');
-    basket.animations.add('jump-left', [0]);
-    basket.animations.add('jump-right', [3]);
-    basket.animations.add('stand-left', [1]);
-    basket.animations.add('stand-right', [2]);
+    basket = game.add.sprite(0, viewport.height, 'basket');
 
     birdMoveCounter = 0;
     secondBirdMoveCounter = 0;
@@ -106,8 +106,6 @@ function create() {
     basket.body.checkCollision.right = false;
     basket.body.mass = 1;
     basket.body.collideWorldBounds = true;
-
-    basket.alpha = 0.2;
 
     bird.body.checkCollision.up = false;
     bird.body.checkCollision.down = false;
@@ -137,10 +135,7 @@ function create() {
       object.destroy();
     }, this);
     
-    // Set hitbox to a little bit less than the height so it looks like he's in contact with the platform
-    basket.body.setSize(CHARACTER_SPRITE_FRAME_WIDTH,CHARACTER_SPRITE_FRAME_HEIGHT-70);
-    
-    basket.scale.setTo(0.1,0.1);
+    basket.scale.setTo(0.4,0.4);
 
     bird.scale.setTo(0.1,0.1);
     secondBird.scale.setTo(0.1,0.1);
@@ -173,7 +168,7 @@ function create() {
            x: secondBird.body.position.x,
            y: 50
         };
-        
+
         createRandomObjectInPosition(position);
         window.setTimeout(createObjectActionBirdTwo, 2000);
     };
