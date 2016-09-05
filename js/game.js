@@ -59,13 +59,13 @@ function create() {
     //  Set the world (global) gravity
     game.physics.arcade.gravity.y = 1000;
 
-    bird = game.add.sprite(Math.random()*viewport.width, 0, 'player');
+    bird = game.add.sprite(viewport.width * 0.75, 0, 'player');
     bird.animations.add('jump-left', [0]);
     bird.animations.add('jump-right', [3]);
     bird.animations.add('stand-left', [1]);
     bird.animations.add('stand-right', [2]);
 
-    secondBird = game.add.sprite(Math.random()*viewport.width, 0, 'player');
+    secondBird = game.add.sprite(viewport.width * 0.25, 0, 'player');
     secondBird.animations.add('jump-left', [0]);
     secondBird.animations.add('jump-right', [3]);
     secondBird.animations.add('stand-left', [1]);
@@ -208,8 +208,8 @@ function debug(message) {
 }
 
 function moveBirds () {
-  var NUMBER_OF_TURNS = 80;
-  bird.body.position.x = bird.body.position.x + (multiplier * Math.random()*viewport.width*0.01);
+  var NUMBER_OF_TURNS = 140;
+  bird.body.position.x = bird.body.position.x + (multiplier * Math.random()*viewport.width*0.015);
 
   if (birdMoveCounter % NUMBER_OF_TURNS === 0) {
     birdMoveCounter = 0;
@@ -217,7 +217,7 @@ function moveBirds () {
   }
 
   var changeDirectionChance = Math.random();
-  if (changeDirectionChance >= 0 && changeDirectionChance < 0.001) {
+  if (changeDirectionChance >= 0 && changeDirectionChance < 0.035) {
     multiplier = multiplier * -1;
     debug("Change to " + multiplier);
   }
@@ -232,7 +232,7 @@ function moveBirds () {
   }
 
   var changeDirectionChance = Math.random();
-  if (changeDirectionChance >= 0 && changeDirectionChance < 0.001) {
+  if (changeDirectionChance >= 0 && changeDirectionChance < 0.02) {
     secondBirdMultiplier = secondBirdMultiplier * -1;
     debug("Change to " + secondBirdMultiplier);
   }
