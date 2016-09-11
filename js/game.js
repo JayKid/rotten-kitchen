@@ -36,6 +36,7 @@ function preload() {
     game.load.image('burger', 'assets/burger.png');
 
     game.load.audio('catch', ['assets/audio/catch.mp3']);
+    game.load.audio('uec', ['assets/audio/uec.mp3']);
 }
 
 var player;
@@ -191,6 +192,15 @@ function debug(message) {
   }
 }
 
+function playUecWithChance() {
+  var changeDirectionChance = Math.random();
+  if (changeDirectionChance >= 0 && changeDirectionChance < 0.1) {
+    var uec;
+    uec = game.add.audio('uec');
+    uec.play();
+  }
+}
+
 function moveBirds () {
   var NUMBER_OF_TURNS = 140;
   bird.body.position.x = bird.body.position.x + (multiplier * Math.random()*viewport.width*0.015);
@@ -202,6 +212,7 @@ function moveBirds () {
 
   var changeDirectionChance = Math.random();
   if (changeDirectionChance >= 0 && changeDirectionChance < 0.035) {
+    playUecWithChance();
     multiplier = multiplier * -1;
     debug("Change to " + multiplier);
   }
@@ -217,12 +228,15 @@ function moveBirds () {
 
   var changeDirectionChance = Math.random();
   if (changeDirectionChance >= 0 && changeDirectionChance < 0.02) {
+    playUecWithChance();
     secondBirdMultiplier = secondBirdMultiplier * -1;
     debug("Change to " + secondBirdMultiplier);
   }
 
   ++secondBirdMoveCounter;
 }
+
+
 
 function update() {
 
