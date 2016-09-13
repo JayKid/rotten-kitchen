@@ -35,8 +35,9 @@ function preload() {
     game.load.image('basket', 'assets/basket.png');
     game.load.image('burger', 'assets/burger.png');
 
-    game.load.audio('catch', ['assets/audio/catch.mp3']);
+    game.load.audio('burgerup', ['assets/audio/burgerup.mp3']);
     game.load.audio('uec', ['assets/audio/uec.mp3']);
+    game.load.audio('bg', ['assets/audio/bgcut.wav']);
 }
 
 var player;
@@ -53,9 +54,21 @@ var objects = [];
 var facing = DIRECTIONS.RIGHT;
 var cursors;
 var bg;
+var bgmusic;
+var soundPlaying;
 var scoreCounter;
 var scoreContainer;
 var DEBUG = false;
+
+function toggleMusicState(sound) {
+  soundPlaying = !soundPlaying;
+  if (soundPlaying) {
+    //sound.play();
+    sound.loopFull();
+  } else {
+    sound.stop();
+  }
+}
 
 function create() {
 
@@ -69,6 +82,10 @@ function create() {
 
     //  Set the world (global) gravity
     game.physics.arcade.gravity.y = 1000;
+
+    // Initialise background music
+    bgmusic = game.add.audio('bg');
+    toggleMusicState(bgmusic);
 
     bird = game.add.sprite(viewport.width * 0.75, 0, 'bird');
     bird.animations.add('left-open', [0]);
@@ -130,7 +147,7 @@ function create() {
     basket.body.onCollide = new Phaser.Signal();
     basket.body.onCollide.add(function(basket, object) {
       var music;
-      music = game.add.audio('catch');
+      music = game.add.audio('burgerup');
       music.play();
 
       scoreCounter = scoreCounter + 1;
