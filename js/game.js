@@ -2,6 +2,26 @@ var viewport = {
   width: 800,
   height: 600
 };
+
+/* Potential dimensions objects
+var CHARACTERS_DIMENSIONS = {
+  player: {
+    sprite_width: 117,
+    sprite_width: 108,
+    sprite_frames_number: 2,
+    sprite_frame_width: function () {
+      return this.sprite_width / this.sprite_frames_number;
+    },
+  },
+  basket: {
+
+  },
+  bird: {
+
+  }
+};
+*/
+
 var CHARACTER_SPRITE_WIDTH = 117;
 var CHARACTER_SPRITE_FRAMES_NUMBER = 2;
 var CHARACTER_SPRITE_FRAME_WIDTH = CHARACTER_SPRITE_WIDTH/CHARACTER_SPRITE_FRAMES_NUMBER;
@@ -26,6 +46,11 @@ var ANIMATION_STATES = {
   STAND: 'stand'
 };
 
+var SOUNDS = {
+  BIRD_NOISE: 'uec',
+  OBJECT_PICKED: 'burgerup'
+};
+
 var game = new Phaser.Game(viewport.width, viewport.height, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, render: render, update: update });
 
 function preload() {
@@ -35,8 +60,8 @@ function preload() {
     game.load.image('basket', 'assets/basket.png');
     game.load.image('burger', 'assets/burger.png');
 
-    game.load.audio('burgerup', ['assets/audio/burgerup.mp3']);
-    game.load.audio('uec', ['assets/audio/uec.mp3']);
+    game.load.audio(SOUNDS.OBJECT_PICKED, ['assets/audio/burgerup.mp3']);
+    game.load.audio(SOUNDS.BIRD_NOISE, ['assets/audio/uec.mp3']);
     game.load.audio('bg', ['assets/audio/bgcut.wav']);
 }
 
@@ -44,6 +69,21 @@ var player;
 var basket;
 
 var birdCharacters = [];
+/* Potential structure of a character object */
+/*
+  bird = {
+    character: phaserObject here,
+    properties: {
+      name: String
+    },
+    ia: {
+      multiplier: Number,
+      moveCounter: Number,
+      probabilityX: Number,
+      probabilityY: Number
+    }
+  };
+*/
 var bird;
 var multiplier;
 var birdMoveCounter;
@@ -75,6 +115,12 @@ function toggleBackgroundMusicState(sound) {
   }
 }
 
+function playSound(soundKey) {
+  var music;
+  music = game.add.audio(soundKey);
+  music.play();
+}
+
 function setBirdAnimations(bird) {
     bird.animations.add('left-open', [0]);
     bird.animations.add('right-open', [1]);
@@ -86,6 +132,7 @@ function create() {
 
     // Set Debug mode On
     DEBUG = true;
+    debug("Game init");
 
     game.world.setBounds(0, 0, this.game.width, viewport.height);
     game.stage.backgroundColor = '#7546bb';
@@ -104,7 +151,7 @@ function create() {
 
     secondBird = game.add.sprite(viewport.width * 0.25, 0, 'bird');
     setBirdAnimations(secondBird);
-    
+
     player = game.add.sprite(viewport.width * 0.25, viewport.height - CHARACTER_SPRITE_FRAME_HEIGHT, 'player');
     player.animations.add('stand-left', [0]);
     player.animations.add('stand-right', [1]);
@@ -152,10 +199,8 @@ function create() {
 
     basket.body.onCollide = new Phaser.Signal();
     basket.body.onCollide.add(function(basket, object) {
-      var music;
-      music = game.add.audio('burgerup');
-      music.play();
-
+      
+      playSound(SOUNDS.OBJECT_PICKED);
       scoreCounter = scoreCounter + 1;
       scoreContainer.text = 'SC0R3: ' + scoreCounter;
       
@@ -218,9 +263,7 @@ function debug(message) {
 function playUecWithChance() {
   var changeDirectionChance = Math.random();
   if (changeDirectionChance >= 0 && changeDirectionChance < 0.1) {
-    var uec;
-    uec = game.add.audio('uec');
-    uec.play();
+    playSound(SOUNDS.BIRD_NOISE);
   }
 }
 
@@ -237,7 +280,6 @@ function moveBirds () {
   if (changeDirectionChance >= 0 && changeDirectionChance < 0.035) {
     playUecWithChance();
     multiplier = multiplier * -1;
-    debug("Change to " + multiplier);
   }
 
   ++birdMoveCounter;
@@ -253,7 +295,6 @@ function moveBirds () {
   if (changeDirectionChance >= 0 && changeDirectionChance < 0.02) {
     playUecWithChance();
     secondBirdMultiplier = secondBirdMultiplier * -1;
-    debug("Change to " + secondBirdMultiplier);
   }
 
   ++secondBirdMoveCounter;
