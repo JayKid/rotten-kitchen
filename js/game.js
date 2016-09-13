@@ -42,32 +42,44 @@ function preload() {
 
 var player;
 var basket;
+
+var birdCharacters = [];
 var bird;
-var secondBird;
+var multiplier;
 var birdMoveCounter;
+
+var secondBird;
 var secondBirdMoveCounter;
 var secondBirdMultiplier;
+
 var spawnBird = true;
-var multiplier;
 var animationState = ANIMATION_STATES.STAND;
 var objects = [];
 var facing = DIRECTIONS.RIGHT;
 var cursors;
-var bg;
+
 var bgmusic;
-var soundPlaying;
+var backgroundMusicPlaying;
+
 var scoreCounter;
 var scoreContainer;
+
 var DEBUG = false;
 
-function toggleMusicState(sound) {
-  soundPlaying = !soundPlaying;
-  if (soundPlaying) {
-    //sound.play();
+function toggleBackgroundMusicState(sound) {
+  backgroundMusicPlaying = !backgroundMusicPlaying;
+  if (backgroundMusicPlaying) {
     sound.loopFull();
   } else {
     sound.stop();
   }
+}
+
+function setBirdAnimations(bird) {
+    bird.animations.add('left-open', [0]);
+    bird.animations.add('right-open', [1]);
+    bird.animations.add('left-closed', [2]);
+    bird.animations.add('right-closed', [3]);
 }
 
 function create() {
@@ -85,20 +97,14 @@ function create() {
 
     // Initialise background music
     bgmusic = game.add.audio('bg');
-    toggleMusicState(bgmusic);
+    toggleBackgroundMusicState(bgmusic);
 
     bird = game.add.sprite(viewport.width * 0.75, 0, 'bird');
-    bird.animations.add('left-open', [0]);
-    bird.animations.add('right-open', [1]);
-    bird.animations.add('left-closed', [2]);
-    bird.animations.add('right-closed', [3]);
+    setBirdAnimations(bird);
 
     secondBird = game.add.sprite(viewport.width * 0.25, 0, 'bird');
-    secondBird.animations.add('left-open', [0]);
-    secondBird.animations.add('right-open', [1]);
-    secondBird.animations.add('left-closed', [2]);
-    secondBird.animations.add('right-closed', [3]);
-
+    setBirdAnimations(secondBird);
+    
     player = game.add.sprite(viewport.width * 0.25, viewport.height - CHARACTER_SPRITE_FRAME_HEIGHT, 'player');
     player.animations.add('stand-left', [0]);
     player.animations.add('stand-right', [1]);
