@@ -48,13 +48,15 @@ var ANIMATION_STATES = {
 
 var SOUNDS = {
   BIRD_NOISE: 'uec',
-  OBJECT_PICKED: 'burgerup'
+  OBJECT_PICKED: 'burgerup',
+  BGMUSIC: 'bg'
 };
 
 var game = new Phaser.Game(viewport.width, viewport.height, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, render: render, update: update });
 
 function preload() {
 
+    // Pre-load images for characters (sprites) and also sounds for sound FX & BG music
     game.load.spritesheet('player', 'assets/fucker.png', CHARACTER_SPRITE_FRAME_WIDTH, CHARACTER_SPRITE_FRAME_HEIGHT, CHARACTER_SPRITE_FRAMES_NUMBER);
     game.load.spritesheet('bird', 'assets/bird.png', BIRD_SPRITE_FRAME_WIDTH, BIRD_SPRITE_FRAME_HEIGHT, BIRD_SPRITE_FRAMES_NUMBER);
     game.load.image('basket', 'assets/basket.png');
@@ -62,7 +64,7 @@ function preload() {
 
     game.load.audio(SOUNDS.OBJECT_PICKED, ['assets/audio/burgerup.mp3']);
     game.load.audio(SOUNDS.BIRD_NOISE, ['assets/audio/uec.mp3']);
-    game.load.audio('bg', ['assets/audio/bgcut.wav']);
+    game.load.audio(SOUNDS.BGMUSIC, ['assets/audio/bgcut.wav']);
 }
 
 var player;
@@ -143,7 +145,7 @@ function create() {
     game.physics.arcade.gravity.y = 1000;
 
     // Initialise background music
-    bgmusic = game.add.audio('bg');
+    bgmusic = game.add.audio(SOUNDS.BGMUSIC);
     toggleBackgroundMusicState(bgmusic);
 
     bird = game.add.sprite(viewport.width * 0.75, 0, 'bird');
@@ -158,10 +160,13 @@ function create() {
 
     basket = game.add.sprite(200+CHARACTER_SPRITE_FRAME_WIDTH, viewport.height, 'basket');
 
+    // initialise bird(s) properties related to behaviour
     birdMoveCounter = 0;
     secondBirdMoveCounter = 0;
     multiplier = -1;
     secondBirdMultiplier = 1;
+
+    // initialize score UI + counter
     scoreCounter = 0;
     scoreContainer = game.add.text(viewport.width - 200, 16, 'SC0R3: '+scoreCounter, { fontSize: '32px', fill: '#000' });
     
