@@ -371,3 +371,31 @@ function render() {
   game.debug.cameraInfo(game.camera, 32, 32);
   game.debug.spriteCoords(player, 32, 500);
 }
+
+$(document).ready(function(){
+  var url = "http://jay.cat:3000/score";
+
+  var success = function (data) {
+
+    console.log(data);
+    if (data && data.scores) {
+      var docfrag = document.createDocumentFragment();
+      var list = document.querySelector('ol');
+      data.scores.forEach(function(score) {
+
+        var li = document.createElement("li");
+        li.textContent = score.score + " " + score.name;
+        docfrag.appendChild(li);
+      },this);
+
+      list.appendChild(docfrag);
+    }
+    
+  };
+
+  $.ajax({
+    dataType: "json",
+    url: url,
+    success: success
+  });
+});
